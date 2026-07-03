@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log
+model/
+outputs/
+web_demo_outputs/
+web_demo_uploads/

@@ -1,0 +1,39 @@
+{
+  "system_name": "ogaal_ctc",
+  "created_at": "2026-06-23",
+  "acoustic_model_dir": ".",
+  "default_decoder": {
+    "name": "transcript_only",
+    "lm_binary": "decoders/transcript_only/lm_5gram.binary",
+    "unigrams": "decoders/transcript_only/unigrams.txt",
+    "alpha": 0.7,
+    "beta": 1.0
+  },
+  "fixed_eval_manifests": {
+    "val": "internal_manifest_not_published",
+    "test": "internal_manifest_not_published"
+  },
+  "training_pool": {
+    "train_clips": 39604,
+    "train_hours": 72.1184,
+    "source_counts": {
+      "balanced_gold": 3424,
+      "hardcase_recorded_400": 400,
+      "ddd_kenya_somali_68hrs_mozilla": 35780
+    }
+  },
+  "benchmark_scores": {
+    "greedy": {
+      "val_wer": 0.37096106048053024,
+      "val_cer": 0.12816884324586586,
+      "test_wer": 0.3397070789259561,
+      "test_cer": 0.1187312986235787
+    },
+    "transcript_only": {
+      "val_wer": 0.21789560894780446,
+      "val_cer": 0.1019690292321999,
+      "test_wer": 0.2113506916192026,
+      "test_cer": 0.09970077797725913
+    }
+  }
+}
