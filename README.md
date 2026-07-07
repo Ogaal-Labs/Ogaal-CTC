@@ -4,7 +4,7 @@
 
 `Ogaal CTC` is the public Somali CTC ASR release from Ogaal Labs.
 
-The Hugging Face model page is being finalized and will be linked here once it is live.
+Hugging Face model: `https://huggingface.co/Ogaal-Labs/Ogaal-CTC`
 
 ## Overview
 
@@ -49,7 +49,11 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Download the Hugging Face model repo into `model/` yourself or pass `--model-dir` explicitly.
+Download the Hugging Face model repo into `model/` yourself or pass `--model-dir` explicitly:
+
+```bash
+git clone https://huggingface.co/Ogaal-Labs/Ogaal-CTC model
+```
 
 CLI example:
 
@@ -110,6 +114,7 @@ Ogaal-CTC/
 
 - organization: `Ogaal Labs`
 - website: `https://ogaallabs.com/`
+- Hugging Face: `https://huggingface.co/Ogaal-Labs/Ogaal-CTC`
 
 ## Documentation
 
