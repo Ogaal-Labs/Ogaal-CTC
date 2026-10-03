@@ -2,129 +2,122 @@
 
 ![Ogaal CTC Architecture](docs/figures/ogaal_ctc_architecture.png)
 
-`Ogaal CTC` is the public Somali CTC ASR release from Ogaal Labs.
+**Ogaal CTC** is a compact, developer-focused Somali automatic speech recognition system from Ogaal Labs. It combines a 300M-parameter Wav2Vec2/XLSR CTC acoustic model with the published `transcript_only` language-model decoder for practical local transcription.
 
-Hugging Face model: `https://huggingface.co/Ogaal-Labs/Ogaal-CTC`
+**Model:** [Ogaal-Labs/Ogaal-CTC](https://huggingface.co/Ogaal-Labs/Ogaal-CTC)
 
-## Overview
+## Key capabilities
 
-This repository packages:
+- local CPU or GPU inference
+- individual file and folder transcription
+- long-audio chunking with speech-region detection
+- text, JSON, JSONL, and CSV outputs
+- browser demo for recording or uploading audio
+- bundled decoder matching the published evaluation path
 
-- a local Somali ASR inference CLI
-- a browser demo for recording or uploading audio
-- the published LM-decoded usage path
-- product documentation for developers
+## Published Somali results
 
-## Highlights
+The bundled `transcript_only` decoder produced:
 
-- Somali CTC ASR system built around `Wav2Vec2/XLSR`
-- trained on roughly `72.1` hours of Somali speech
-- published decode path based on `transcript_only`
-- local CLI workflow for file and folder transcription
-- local browser demo for recording or uploading audio
+- validation WER: `0.2179`
+- test WER: `0.2114`
+- test CER: `0.0997`
 
-## Why Ogaal CTC Was Built
+> These metrics are for the bundled language-model decoder, not raw greedy CTC decoding.
 
-Ogaal Labs builds local datasets and practical AI tools for Somali and African communities. `Ogaal CTC` was intentionally trained and released for Somali speech recognition.
+## Training overview
 
-English was not part of the training objective for this release.
+- model family: `Wav2Vec2 / XLSR-300M`
+- architecture: `Wav2Vec2ForCTC`
+- training clips: `39,604`
+- training audio: approximately `72.1` hours
+- primary language: Somali (`so`)
 
-## Data Overview
+A private Ogaal Labs collection contributed roughly 5,000 curated prompts recorded by 19 speakers across varied genders, accents, and speaking styles. English was not part of the training objective.
 
-The training effort behind this release totals roughly `72.1` hours of Somali speech.
-
-A private Ogaal Labs collection pipeline contributed a core part of that effort through roughly `5,000` curated prompts recorded by `19` speakers across varied genders, accents, and speaking styles.
-
-## Runtime Requirements
+## Runtime requirements
 
 - Python `3.10+`
-- `ffmpeg` available on the system path
-- local model files placed in `model/` or passed through `--model-dir`
+- `ffmpeg` on the system path
+- local model files downloaded from Hugging Face
 
-## Quick Start
-
-Install dependencies:
+## Quick start
 
 ```bash
+git clone https://github.com/Ogaal-Labs/Ogaal-CTC.git
+cd Ogaal-CTC
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-```
-
-Download the Hugging Face model repo into `model/` yourself or pass `--model-dir` explicitly:
-
-```bash
 git clone https://huggingface.co/Ogaal-Labs/Ogaal-CTC model
 ```
 
-CLI example:
+Transcribe one file with the published decoder:
 
 ```bash
 python scripts/infer_ogaal_ctc.py \
   --audio-path /path/to/audio.wav \
-  --model-dir /path/to/model_repo
+  --model-dir model
 ```
 
-Browser demo:
+Transcribe a folder:
 
 ```bash
-python scripts/web_demo.py --host 127.0.0.1 --port 7861 --model-dir /path/to/model_repo
+python scripts/infer_ogaal_ctc.py \
+  --audio-dir /path/to/audio_folder \
+  --model-dir model \
+  --recursive
 ```
 
-Common developer commands:
+Run the local browser demo:
 
 ```bash
-make check
-make demo MODEL_DIR=/path/to/model_repo
-make infer MODEL_DIR=/path/to/model_repo AUDIO=/path/to/audio.wav
+python scripts/web_demo.py \
+  --host 127.0.0.1 \
+  --port 7861 \
+  --model-dir model
 ```
 
-## Somali Metrics
+## Transformers acoustic-model usage
 
-- validation WER with the published decode path: `0.2179`
-- test WER with the published decode path: `0.2114`
-- test CER with the published decode path: `0.0997`
+```python
+from transformers import AutoModelForCTC, AutoProcessor
 
-## Decoder Note
-
-- the published decoder path is `transcript_only`
-- the release package is ready for local use through the CLI and browser demo
-- the same decode path is used for the public metrics
-
-## Repository Layout
-
-```text
-Ogaal-CTC/
-├── docs/
-│   ├── figures/
-│   ├── MODEL_SCOPE.md
-│   ├── PUBLICATION_CHECKLIST.md
-│   ├── README.md
-│   └── TECHNICAL_BOOK.md
-├── examples/
-├── metadata/
-├── scripts/
-├── .github/
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── Makefile
-├── PUSHING.md
-└── requirements.txt
+model_id = "Ogaal-Labs/Ogaal-CTC"
+processor = AutoProcessor.from_pretrained(model_id)
+model = AutoModelForCTC.from_pretrained(model_id)
 ```
 
-## Ogaal Labs
+This loads the acoustic model for raw or greedy CTC decoding. Use the repository CLI and bundled `transcript_only` decoder to reproduce the published WER and CER.
 
-- organization: `Ogaal Labs`
-- website: `https://ogaallabs.com/`
-- Hugging Face: `https://huggingface.co/Ogaal-Labs/Ogaal-CTC`
+## Intended use
+
+- Somali speech transcription
+- local and privacy-sensitive transcription workflows
+- developer integration for Somali voice products
+- research and evaluation using the released decode path
+
+## Limitations
+
+- designed for Somali, not general multilingual transcription
+- English was not part of the training objective
+- accuracy may vary with accents, noise, microphones, domains, and speaking styles
+- confidence values are experimental and should not be treated as calibrated probabilities
 
 ## Documentation
 
-- technical book: `docs/TECHNICAL_BOOK.md`
-- model scope: `docs/MODEL_SCOPE.md`
-- publication checklist: `docs/PUBLICATION_CHECKLIST.md`
-- documentation index: `docs/README.md`
+- [Technical book](docs/TECHNICAL_BOOK.md)
+- [Model scope](docs/MODEL_SCOPE.md)
+- [Contributing](CONTRIBUTING.md)
+- [Hugging Face model card](https://huggingface.co/Ogaal-Labs/Ogaal-CTC)
 
-## Development
+## License
 
-- run `make check` before pushing
-- keep model weights and decoder binaries out of Git
-- keep local inference outputs untracked
+The code in this repository is licensed under the [Apache License 2.0](LICENSE). The published model repository uses the same license.
+
+## Ogaal Labs
+
+Ogaal Labs builds local datasets and practical AI tools for Somali and African communities.
+
+- Website: https://ogaallabs.com/
+- Hugging Face: https://huggingface.co/Ogaal-Labs/Ogaal-CTC
